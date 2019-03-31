@@ -1,0 +1,37 @@
+Would you like to
+1. Add Investment System Data function
+    : You can type "Add Investment Year" and type "CompanyName = Money" as you want.
+      if you want back to main menu you can type "Exit"
+      
+      For Example...
+      Add Investment 2562
+      CompanyA = 1000
+      CompanyB = 2000
+      CompanyC = 500
+      CompanyD = 3000
+      End
+
+2. Add Partner System Data function
+    : You can type "Add Partner Year" and type "CompanyName = Money" as you want.
+      if you want back to main menu you can type "Exit"
+      
+      For Example...
+      Add Partner 2561
+      Company1 = 1000
+      Company2 = 2000
+      Company3 = 500
+      Company4 = 3000
+      End
+
+3. Profit analysis function
+    : You can type "Profit analysis Year" Program will show data in graph function.
+      You can press Enter to back to main manu
+
+    For Example...
+    Profit analysis 2560
+
+4. Search function
+    : 
+
+5. Close Program
+    : In main menu you can type "Close" to Close program.
