@@ -8,6 +8,10 @@
 #include<stdio.h>
 #include<vector>
 using namespace std;
+
+time_t t =time(NULL);
+//tm* timePrt=localtime(&t);
+
 //Write definition of function prototype here
 void ShowBarGraph();//ฟิวเขียน
 void ShowLineGraph();//แบมเขียน
@@ -16,6 +20,7 @@ void InputData(string textline);//เต๋าเขียน
 void SearchData(string);//ยังไม่มีคนเขียน
 void ProfitAnalysis(int);//ยังไม่มีคนเขียน
 void StrToUpper(string &);//complete
+void AddToFile(string,string);//complete
 
 struct yeardata{
     int year;
@@ -42,10 +47,11 @@ int main(){
         getline(cin,textline);
         int end = textline.find_first_of(" ");
         command = textline.substr(0,end);
+        StrToUpper(command);        ofstream d("InvestmentSystemData.txt");d<<"He",ios::app;d.close();
         if(command == "ADD"){
             InputData(textline);
-        }
-        break;
+        }else{cout <<"UNKNOWN COMMAND\n";}
+        break;//ยังไม่ได้เขียนวิธีจบ loop
     }while(true);
 
 }
@@ -58,29 +64,20 @@ void StrToUpper(string &text){
 }
 
 void InputData(string textline){
-    string type;
-    int end = textline.find_first_of(" ");
-    type = textline.substr(4,end);
+    string type, year;
+    int end = textline.find_first_of(" ",5);
+    type = textline.substr(4,end-4);
     StrToUpper(type);
-    string data , year;
-    cout<< type<<",";
-    year = textline.substr(end+1,(textline.size()));
-    time_t t =time(NULL);
-    tm* timePrt=localtime(&t);
-    if(atoi(year.c_str()) <=2500 && atoi(year.c_str()) > timePrt->tm_year) cout << "Incorrect data\n";
+    year = textline.substr(end+1,(textline.size()-end-1));
+    if(atoi(year.c_str()) <=2500 || atoi(year.c_str()) > 2562 /*timePrt->tm_year*/) 
+    {
+        cout << "Incorrect data\n";
+    }
     else{
-        if(type == "INVESMENT"){
-            while(getline(cin,data)){
-                
-            }
-        }else if("Partner"){
-            while(getline(cin,data)){
-                
-            }
-        }else cout << "Incorrect data\n";
-        }
-    
-
+        if(type == "INVESTMENT") AddToFile("InvestmentSystemData.txt",year);
+        else if("Partner") AddToFile("PartnerSystemData.txt",year);
+        else cout << "Incorrect data\n";
+    }
 }
 
 void SearchData(string type){
@@ -88,6 +85,29 @@ void SearchData(string type){
     //ค้นหาแบบเป็นชื่อบริษัทเก็บค่าไว้ใน struct companydata
 }
 
+void AddToFile(string loc,string year){
+    string data;
+    int end;
+    ofstream dest(loc.c_str());
+    while(true){
+        cout << "INPUT :";
+        getline(cin,data);
+        end = data.find_first_of("=");
+        data[end]=',';
+        StrToUpper(data);
+        if(data == "END") {
+            dest.close();
+            break;
+        }
+        if(end > 0 ){ 
+            //string smoney = data.substr(end,data.size()-end);smoney[end,data.size()-end]='\0';
+            //double money = atof(smoney.c_str());cout <<smoney<<","<<money;
+            /*if(money > 0)*/ dest << year <<"," << data << "\n" , ios::app;
+            //else cout << " >>Money must be number\n";
+            cout << ">>COMPLETE\n";
+        }else cout << " >>CANNOT INPUT DATA\n";
+    }
+}
 void ProfitAnalysis(int year){
     //คำนวนกำไรแต่ละปีเก็บไว้ใน vector แล้วเรียก function ShowprofitGraph
     vector<int> profit;
