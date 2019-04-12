@@ -22,18 +22,38 @@ void SearchData(string);//ยังไม่มีคนเขียน
 void ProfitAnalysis(int);//ยังไม่มีคนเขียน
 void StrToUpper(string &);//complete
 void AddToFile(int,string);//complete
+long double AppraiseofCompany(totalprofit);
 
 struct yeardata{
     int year;
+    public:
     vector<string> company;
     vector<int> money;
 };
 
 struct companydata{
     string company;
+    public:
     vector<int> year;
-    vector<int> money;
+    vector<int> money();
 };
+
+struct profitfromselling{
+    double profit;
+    public:
+    vector<double> profitvec();
+};
+
+struct  totalprofit
+{
+    profitfromselling *receive1;
+    companydata *receive2;
+    public:
+    vector<double> profit;
+    vector<double> profitforecast;
+    vector<double> totalprofitvec(profitfromselling *, companydata *);
+};
+
 
 //main function//
 int main(){
@@ -130,7 +150,6 @@ void ProfitAnalysis(int year){
     //คำนวนกำไรแต่ละปีเก็บไว้ใน vector แล้วเรียก function ShowprofitGraph
     vector<int> profit;
 
-    
 }
 
 void ShowBarGraph(){
@@ -143,4 +162,39 @@ void ShowLineGraph(){
 
 void ShowprofitGraph(vector<int> profit){
 
+}
+
+vector<double> totalprofit::totalprofitvec(profitfromselling *input1,companydata *input2){
+    vector<double> data1,data2;
+    data1 = input1 -> profitvec;
+    data2 = input2 -> money;
+    int Numberyears = sizeof(companydata::year);
+    for (int i = 0; i < Numberyears; i++)
+    {
+        profit.push_back(data1[i]+data2[i]);
+    }
+    double sum=0;
+    for (int i = 0; i < 5; i++)
+    {
+        sum=0;
+        for (int j = 0+i; j < Numberyears+i; j++)
+        { 
+            sum +=profit[j];
+        }
+        profitforecast.push_back(sum/Numberyears);
+    }   
+}
+
+long double AppraiseofCompany(totalprofit asset){
+    long double value;
+    double sum=0;
+    int Numberyears = sizeof(companydata::year);
+    for (int i = 0; i < 5; i++)
+    {
+        sum+=asset.profitforecast[i];
+    } 
+    double SumUnitMillion;
+    SumUnitMillion=sum/1000000; //ปรับเป็นหน่วย ล้านบาท
+    value = (pow(SumUnitMillion,Numberyears))*1000000; //ใช้สูตรก่อนแล้วค่อยกลับให้กลายเป็นหน่วยเดิม
+    return value;
 }
