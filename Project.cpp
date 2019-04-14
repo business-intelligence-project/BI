@@ -63,7 +63,6 @@ struct  totalprofit
     vector<double> totalprofitvec(profitfromselling *, companydata *);
 };
 
-
 vector<yeardata> ydata;
 companydata comdata;
 int const cerrentyear = gettime();
@@ -223,7 +222,7 @@ void AddToFile(int loc,string year){
                 data = DelSpacebar(0,data.find_last_of("="),data);
                 data = DelSpacebar(data.find_last_of("=") + 1,data.size(),data);
                 data[data.find_first_of("=")] = ',';
-                dest << year <<"," << data << "\n" ,ios_base::app;
+                dest << year <<"," << data << "\n" ,ios::app;
                 cout << ">>COMPLETE\n";
             } 
             else cout << " >>MONEY MUST BE NUMBER\n";
