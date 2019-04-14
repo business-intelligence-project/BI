@@ -28,7 +28,7 @@ void ShowBarGraph();//ฟิวเขียน
 void ShowLineGraph();//แบมเขียน
 void ShowprofitGraph(vector<int>);//ยังไม่มีคนเขียน
 void InputData(string textline);//เต๋าเขียน//complete
-void SearchData(int,string);//ยังไม่มีคนเขียน
+void SearchData(int,string);//complete
 void ProfitAnalysis(int);//ยังไม่มีคนเขียน
 void StrToUpper(string &);//complete
 void AddToFile(int,string);//complete
