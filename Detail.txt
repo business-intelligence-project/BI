@@ -31,7 +31,12 @@ Would you like to
     Profit analysis 2560
 
 4. Search function
-    : 
+    : You can type "(Investment or Partner) (Year or Name)" to search something.
+
+    For Example...
+    Investment 2562
+    Partner 2561-2562
+    Partner Company1
 
 5. Close Program
     : In main menu you can type "Close" to Close program.
