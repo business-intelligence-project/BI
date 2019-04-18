@@ -29,7 +29,7 @@ void ShowLineGraph();//แบมเขียน
 void ShowprofitGraph(vector<int>);//ยังไม่มีคนเขียน
 void InputData(string textline);//เต๋าเขียน//complete
 void SearchData(int,string);//complete
-void ProfitAnalysis(int);//ยังไม่มีคนเขียน
+void ProfitAnalysis(int);//ต้าเขียน
 void StrToUpper(string &);//complete
 void AddToFile(int,string);//complete
 string DelSpacebar(int,int,string);//complete
