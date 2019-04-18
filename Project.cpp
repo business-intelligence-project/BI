@@ -243,6 +243,7 @@ void ShowBarGraph(){
 }
 
 void ShowLineGraph(){
+    //ใช้ include LineGraph.h เพื่อสร้างกราฟ ตอนนี้อัพ ไฟล์ LineGraph.h ลง github แล้วแต่ยังเขียนไม่เสร็จ ใช้ Dev C++ ทำ.
 
 }
 
