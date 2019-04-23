@@ -248,6 +248,7 @@ void ShowLineGraph(){
 }
 
 void ShowprofitGraph(vector<int> profit){
+	//เหลือบีบอัดกราฟ ดึงข้อมูล สร้างขอบเขต
 
 }
 
