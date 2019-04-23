@@ -26,10 +26,10 @@ int gettime(){
 
 void ShowBarGraph();//ฟิวเขียน
 void ShowLineGraph();//แบมเขียน
-void ShowprofitGraph(vector<int>);//ยังไม่มีคนเขียน
+void ShowprofitGraph(vector<int>);//ต้าเขียน
 void InputData(string textline);//เต๋าเขียน//complete
 void SearchData(int,string);//complete
-void ProfitAnalysis(int);//ต้าเขียน
+void ProfitAnalysis(int);//ยังไม่มีคนเขียน
 void StrToUpper(string &);//complete
 void AddToFile(int,string);//complete
 string DelSpacebar(int,int,string);//complete
