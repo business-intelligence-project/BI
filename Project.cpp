@@ -103,8 +103,6 @@ int main(){
             cout << "Thank you for use this Program.";
             break;
         }
-        
-        
     }while(true);
 
 }
