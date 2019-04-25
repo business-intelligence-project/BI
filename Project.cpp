@@ -68,7 +68,7 @@ vector<yeardata> ydata_investment;//เก็บข้อมูลจากก�
 vector<yeardata> ydata_partner;//เก็บข้อมูลจากการ Search คำว่า profit พศ ของ PartnerSystemDatatxt//
 vector<yeardata> ydata;
 companydata comdata;
-int const cerrentyear = gettime();
+int const cerrentyear = gettime(); 
 
 //main function//
 int main(){
