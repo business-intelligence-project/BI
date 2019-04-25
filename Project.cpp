@@ -8,8 +8,8 @@
 #include<stdio.h>
 #include<vector>
 #include<time.h>
-//#include<graphics.h>
-//#include "Bargraph.h"
+#include<graphics.h>
+
 using namespace std;
  
 time_t rawtime;
@@ -291,7 +291,51 @@ void ShowBarGraph(){
 }
 
 void ShowLineGraph(){
-
+	double max=0;
+	int yearmin = gettime(),yearmax = 0;
+	for(int i=0;i<comdata.year.size();i++){
+		if(comdata.year[i]<yearmin) yearmin=comdata.year[i];
+		if(comdata.year[i]>yearmax) yearmax=comdata.year[i];
+	}
+	int s=yearmax-yearmin +1;
+	double mon[s]={};
+	for(int i=0;i<comdata.money.size();i++){
+		mon[comdata.year[i]-yearmin] +=comdata.money[i];
+	}
+	for(int i=0;i<s;i++){
+		if(mon[i]>max)max=mon[i];
+	}
+	cout<<"\t\t"<<comdata.company<<endl<<"\tYear\t\tMoney"<<endl;
+	for(int i=0;i<s;i++){
+		cout<<"\t"<<yearmin+i<<"\t\t"<<mon[i]<<endl;
+	}
+	if(s>1){
+		int const W = 800 ,H = 600;
+		initwindow(W,H);
+		char mo[100]={},yr[5]={};
+		settextstyle(0,0,3);
+		sprintf(mo,"%s",comdata.company.c_str());
+		outtextxy(0.5*W,10,mo);
+		settextstyle(0,0,1);
+		line (0.1*W,H-(0.1*H),W*0.9,H-(0.1*H));
+		line (0.1*W,H-(0.1*H),0.1*W,(H*0.1));
+		int x1=0.15*W,y1=H-(0.1*H)-((0.78*H)*mon[0])/max,x2,y2;
+		for(int i=1;i<s;i++){
+			sprintf(mo,"%d",(int)mon[i-1]);
+			outtextxy(0.02*W,y1-2,mo);
+			sprintf(yr,"%d",yearmin+i-1);
+			outtextxy(x1 -20,H-(0.07*H),yr);
+			x2=(0.15*W)+(i*(0.85*W)/s);
+			y2=H-(0.1*H)-((0.78*H)*mon[i])/max;
+			line(x1,y1,x2,y2);
+			x1=x2;
+			y1=y2;
+		}
+		sprintf(mo,"%d",(int)mon[s-1]);
+		outtextxy(0.02*W,y1-2,mo);
+		sprintf(yr,"%d",yearmax);
+		outtextxy(x1 -20,H-(0.07*H),yr);
+	}
 }
 
 void ShowprofitGraph(vector<int> profit){
