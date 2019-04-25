@@ -8,8 +8,7 @@
 #include<stdio.h>
 #include<vector>
 #include<time.h>
-//#include<graphics.h>
-//#include "Bargraph.h"
+#include<graphics.h>
 using namespace std;
  
 time_t rawtime;
@@ -26,7 +25,7 @@ int gettime(){
     return y;
 }
 
-void ShowBarGraph(double);//ฟิวเขียน
+void ShowBarGraph();//ฟิวเขียน
 void ShowLineGraph();//แบมเขียน
 void ShowprofitGraph(vector<int>);//ยังไม่มีคนเขียน
 void InputData(string textline);//เต๋าเขียน//complete
@@ -66,6 +65,8 @@ struct  totalprofit
 
 vector<yeardata> ydata_investment;//เก็บข้อมูลจากการ Search คำว่า profit พศ ของ InvestmentSystemData.txt//
 vector<yeardata> ydata_partner;//เก็บข้อมูลจากการ Search คำว่า profit พศ ของ PartnerSystemDatatxt//
+vector<yeardata> ydata_selling;
+vector<yeardata> ydata_totalmoney;
 vector<yeardata> ydata;
 companydata comdata;
 int const cerrentyear = gettime(); 
@@ -92,12 +93,14 @@ int main(){
             SearchData(0,textline.substr(10,textline.size()-10));
         }else if(command == "PARTNER"){
             SearchData(1,textline.substr(7,textline.size()-7));
-        }else if(command == "PROFIT"){
-        	SearchData(2,textline.substr(6,textline.size()-6));
-		}else{cout <<">UNKNOWN COMMAND\n";}
+        }else if(command == "SELLING"){
+        	SearchData(2,textline.substr(7,textline.size()-7));
+		}else if(command == "CLOSE" || command == "EXIT" || command == "END") {
+            cout << "Thank you for use this Program.";
+            break;
+        }
         
         
-        if(textline == "EXIT")break;
     }while(true);
 
 }
@@ -123,6 +126,7 @@ void InputData(string textline){
     else{
         if(type == "INVESTMENT") AddToFile(1 , year);
         else if(type == "PARTNER") AddToFile(2 ,year);
+        else if(type == "SELLING") AddToFile(3 ,year);
         else cout << "INCORRECT DATA\n";
     }
 }
@@ -164,12 +168,14 @@ void SearchData(int loc,string type){
             ydata.push_back(yd);
             ydata_investment.push_back(yd);
             ydata_partner.push_back(yd);
+            ydata_selling.push_back(yd);
         }else if(yearst > 2500 && yearst <= cerrentyear && yearend >= yearst && yearend <= cerrentyear){
             for(int i = yearst ; i <= yearend ; i++){
                 yd.year = i;
                 ydata.push_back(yd);
                 ydata_investment.push_back(yd);
                 ydata_partner.push_back(yd);
+                ydata_selling.push_back(yd);
             }
         }else{
             cout << ">INCORRECT YEAR\n";
@@ -178,7 +184,8 @@ void SearchData(int loc,string type){
     }
     ifstream source;
     if(loc == 0)source.open("InvestmentSystemData.txt");
-    else source.open("PartnerSystemData.txt");
+    else if(loc == 1 ||loc == 2) source.open("PartnerSystemData.txt");
+    
     if(loc != 2){
         while(getline(source,textline)){
             if(chk == -1) break;
@@ -219,6 +226,7 @@ void SearchData(int loc,string type){
                 }
             }else{
                 cout << "INCORRECT DATA\n";
+                chk=-1;
                 break;
             }
         }
@@ -238,18 +246,46 @@ void SearchData(int loc,string type){
                 }
             }else{
                 cout << "INCORRECT DATA\n";
+                chk=-1;
                 break;
             }
         }
+        source.close();
+        source.open("SellingSystemData.txt");
+        while(getline(source,textline)){
+            if(chk == -1) break;
+            int start = textline.find_first_of(",");
+            int years = atoi(textline.substr(0 , start).c_str());
+            string names = "";
+            double moneys = atof(textline.substr(start + 1, textline.size() - start).c_str());
+            if(chk == 0 ){
+                if((years >= yearst && years <= yearend ) || (years == yearst && yearend == -1)){
+                    ydata_selling[years - yearst].company.push_back(names);
+                    ydata_selling[years - yearst].money.push_back(moneys);
+                }
+            }else{
+                cout << "INCORRECT DATA\n";
+                chk=-1;
+                break;
+            }
+        }
+            
     }
+    if(chk == 0){
+    	ShowBarGraph();
+	}
+    else if(chk == 1){
+    	ShowLineGraph();
+	}
 }
 
 void AddToFile(int loc,string year){
     string data;
     int end;
     ofstream dest;
-    if (loc == 1) dest.open("InvestmentSystemData.txt");
-    else dest.open("PartnerSystemData.txt");
+    if (loc == 1) dest.open("InvestmentSystemData.txt",ios::app);
+    else if(loc == 2)dest.open("PartnerSystemData.txt",ios::app);
+    else if(loc == 3)dest.open("SellingSystemData.txt",ios::app);
     while(true){
         cout << "Input :";
         getline(cin,data);
@@ -261,20 +297,29 @@ void AddToFile(int loc,string year){
             dest.close();
             break;
         }
-        if(end > 0 ){
-            string smoney = data.substr(end + 1,data.size()-end);
-            smoney[data.size()-end]='\0';
-            double money = atoi(smoney.c_str());
-            if(money > 0){
-                
-                data = DelSpacebar(0,data.find_last_of("="),data);
-                data = DelSpacebar(data.find_last_of("=") + 1,data.size(),data);
-                data[data.find_first_of("=")] = ',';
-                dest << year <<"," << data << "\n" ,ios::app;
+        if(loc == 1 ||loc == 2){
+            if(end > 0 ){
+                string smoney = data.substr(end + 1,data.size()-end);
+                smoney[data.size()-end]='\0';
+                double money = atoi(smoney.c_str());
+                if(money > 0){
+                    
+                    data = DelSpacebar(0,data.find_last_of("="),data);
+                    data = DelSpacebar(data.find_last_of("=") + 1,data.size(),data);
+                    data[data.find_first_of("=")] = ',';
+                    dest << year <<"," << data << "\n" ,ios::app;
+                    cout << ">>COMPLETE\n";
+                } 
+                else cout << " >>MONEY MUST BE NUMBER\n";
+            }else cout << " >>CANNOT INPUT DATA\n";
+        }else{
+            if(atof(data.c_str()) > 0){
+                data = DelSpacebar(0,data.size(),data);
+                dest << year <<","<< data << "\n" ,ios::app;
                 cout << ">>COMPLETE\n";
             } 
             else cout << " >>MONEY MUST BE NUMBER\n";
-        }else cout << " >>CANNOT INPUT DATA\n";
+        }
     }
     
 }
@@ -287,11 +332,99 @@ void ProfitAnalysis(int year){
 }
 
 void ShowBarGraph(){
-    
+	double max = 0;
+	int count = 0;
+	cout<<"\tYear\t\t\tName\t\t\tMoney\n";
+	for(int i=0;i<ydata.size();i++){
+		yeardata ydatatmp = ydata[i];
+		for(int j=0;j<ydatatmp.money.size();j++){
+			cout<<"\t"<<ydatatmp.year<<"\t\t\t"<<ydatatmp.company[j]<<"\t\t\t"<<ydatatmp.money[j]<<endl;
+			if(ydatatmp.money[j]>max){
+				max = ydatatmp.money[j];
+			}count++;
+		}
+	}
+	if(count > 1){
+		double W = 800 ,H = 600;
+		initwindow(W,H);
+		line (0.1*W,H-(0.1*H),W*0.9,H-(0.1*H));
+		line (0.1*W,H-(0.1*H),0.1*W,(H*0.1));
+		setfillstyle(LINE_FILL,RED);
+		
+		int left = 0.12*W,top,right,bottom,c = 0;
+		char ty[100]={};
+		for(int i=0;i<ydata.size();i++){
+			setfillstyle(LINE_FILL,GREEN);
+			yeardata ydatatmp = ydata[i];
+			for(int j=0;j<ydatatmp.money.size();j++){
+				if(c != 0) left += 0.7*(W/count);
+				bottom = H-(0.1*H);
+				top = bottom - (ydatatmp.money[j]*H*0.8/max);
+				right = left + (0.6*W/count);
+				bar(left,top,right,bottom);
+				if(j == 0){
+					
+					sprintf(ty,"%d",ydatatmp.year);
+					outtextxy(left,H-(0.08*H),ty);
+				}
+				sprintf(ty,"%s",ydatatmp.company[j].c_str());
+				outtextxy(left,top-20,ty);
+				sprintf(ty,"%d",(int)(ydatatmp.money[j]));
+				outtextxy(0.02*W,top,ty);
+				c++;
+			}
+			if(ydatatmp.money.size()>0) left += 0.15*W/count;
+		}
+	}
 }
 
 void ShowLineGraph(){
-
+	double max=0;
+	int yearmin = gettime(),yearmax = 0;
+	for(int i=0;i<comdata.year.size();i++){
+		if(comdata.year[i]<yearmin) yearmin=comdata.year[i];
+		if(comdata.year[i]>yearmax) yearmax=comdata.year[i];
+	}
+	int s=yearmax-yearmin +1;
+	double mon[s]={};
+	for(int i=0;i<comdata.money.size();i++){
+		mon[comdata.year[i]-yearmin] +=comdata.money[i];
+	}
+	for(int i=0;i<s;i++){
+		if(mon[i]>max)max=mon[i];
+	}
+	cout<<"\t\t"<<comdata.company<<endl<<"\tYear\t\tMoney"<<endl;
+	for(int i=0;i<s;i++){
+		cout<<"\t"<<yearmin+i<<"\t\t"<<mon[i]<<endl;
+	}
+	if(s>1){
+		int const W = 800 ,H = 600;
+		initwindow(W,H);
+		char mo[100]={},yr[5]={};
+		settextstyle(0,0,3);
+		sprintf(mo,"%s",comdata.company.c_str());
+		outtextxy(0.5*W,10,mo);
+		settextstyle(0,0,1);
+		line (0.1*W,H-(0.1*H),W*0.9,H-(0.1*H));
+		line (0.1*W,H-(0.1*H),0.1*W,(H*0.1));
+		int x1=0.15*W,y1=H-(0.1*H)-((0.78*H)*mon[0])/max,x2,y2;
+		for(int i=1;i<s;i++){
+			sprintf(mo,"%d",(int)mon[i-1]);
+			outtextxy(0.02*W,y1-2,mo);
+			sprintf(yr,"%d",yearmin+i-1);
+			outtextxy(x1 -20,H-(0.07*H),yr);
+			x2=(0.15*W)+(i*(0.85*W)/s);
+			y2=H-(0.1*H)-((0.78*H)*mon[i])/max;
+			line(x1,y1,x2,y2);
+			x1=x2;
+			y1=y2;
+		}
+		sprintf(mo,"%d",(int)mon[s-1]);
+		outtextxy(0.02*W,y1-2,mo);
+		sprintf(yr,"%d",yearmax);
+		outtextxy(x1 -20,H-(0.07*H),yr);
+	}
+    
 }
 
 void ShowprofitGraph(vector<int> profit){
