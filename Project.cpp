@@ -9,6 +9,10 @@
 #include<vector>
 #include<time.h>
 #include<graphics.h>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30772885b1b1751facf94922e15f55b623e6af47
 using namespace std;
  
 time_t rawtime;
@@ -25,7 +29,7 @@ int gettime(){
     return y;
 }
 
-void ShowBarGraph();//ฟิวเขียน
+void ShowBarGraph(double);//ฟิวเขียน
 void ShowLineGraph();//แบมเขียน
 void ShowprofitGraph(vector<int>);//ยังไม่มีคนเขียน
 void InputData(string textline);//เต๋าเขียน//complete
