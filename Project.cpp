@@ -66,6 +66,8 @@ struct  totalprofit
 
 vector<yeardata> ydata_investment;//เก็บข้อมูลจากการ Search คำว่า profit พศ ของ InvestmentSystemData.txt//
 vector<yeardata> ydata_partner;//เก็บข้อมูลจากการ Search คำว่า profit พศ ของ PartnerSystemDatatxt//
+vector<yeardata> ydata_selling;
+vector<yeardata> ydata_totalmoney;
 vector<yeardata> ydata;
 companydata comdata;
 int const cerrentyear = gettime(); 
@@ -92,10 +94,12 @@ int main(){
             SearchData(0,textline.substr(10,textline.size()-10));
         }else if(command == "PARTNER"){
             SearchData(1,textline.substr(7,textline.size()-7));
-        }else if(command == "PROFIT"){
-        	SearchData(2,textline.substr(6,textline.size()-6));
-		}else{cout <<">UNKNOWN COMMAND\n";}
-        
+        }else if(command == "SELLING"){
+        	SearchData(2,textline.substr(7,textline.size()-7));
+		}else if(command == "CLOSE") {
+            cout << "Thank you for use this Program.";
+            break;
+        }
         
         if(textline == "EXIT")break;
     }while(true);
@@ -123,6 +127,7 @@ void InputData(string textline){
     else{
         if(type == "INVESTMENT") AddToFile(1 , year);
         else if(type == "PARTNER") AddToFile(2 ,year);
+        else if(type == "SELLING") AddToFile(3 ,year);
         else cout << "INCORRECT DATA\n";
     }
 }
@@ -164,12 +169,14 @@ void SearchData(int loc,string type){
             ydata.push_back(yd);
             ydata_investment.push_back(yd);
             ydata_partner.push_back(yd);
+            ydata_selling.push_back(yd);
         }else if(yearst > 2500 && yearst <= cerrentyear && yearend >= yearst && yearend <= cerrentyear){
             for(int i = yearst ; i <= yearend ; i++){
                 yd.year = i;
                 ydata.push_back(yd);
                 ydata_investment.push_back(yd);
                 ydata_partner.push_back(yd);
+                ydata_selling.push_back(yd);
             }
         }else{
             cout << ">INCORRECT YEAR\n";
@@ -178,7 +185,8 @@ void SearchData(int loc,string type){
     }
     ifstream source;
     if(loc == 0)source.open("InvestmentSystemData.txt");
-    else source.open("PartnerSystemData.txt");
+    else if(loc == 1 ||loc == 2) source.open("PartnerSystemData.txt");
+    
     if(loc != 2){
         while(getline(source,textline)){
             if(chk == -1) break;
@@ -219,6 +227,7 @@ void SearchData(int loc,string type){
                 }
             }else{
                 cout << "INCORRECT DATA\n";
+                chk=-1;
                 break;
             }
         }
@@ -238,9 +247,30 @@ void SearchData(int loc,string type){
                 }
             }else{
                 cout << "INCORRECT DATA\n";
+                chk=-1;
                 break;
             }
         }
+        source.close();
+        source.open("SellingSystemData.txt");
+        while(getline(source,textline)){
+            if(chk == -1) break;
+            int start = textline.find_first_of(",");
+            int years = atoi(textline.substr(0 , start).c_str());
+            string names = "";
+            double moneys = atof(textline.substr(start + 1, textline.size() - start).c_str());
+            if(chk == 0 ){
+                if((years >= yearst && years <= yearend ) || (years == yearst && yearend == -1)){
+                    ydata_selling[years - yearst].company.push_back(names);
+                    ydata_selling[years - yearst].money.push_back(moneys);
+                }
+            }else{
+                cout << "INCORRECT DATA\n";
+                chk=-1;
+                break;
+            }
+        }
+            
     }
 }
 
@@ -249,7 +279,8 @@ void AddToFile(int loc,string year){
     int end;
     ofstream dest;
     if (loc == 1) dest.open("InvestmentSystemData.txt");
-    else dest.open("PartnerSystemData.txt");
+    else if(loc == 2)dest.open("PartnerSystemData.txt");
+    else if(loc == 3)dest.open("SellingSystemData.txt");
     while(true){
         cout << "Input :";
         getline(cin,data);
@@ -261,20 +292,29 @@ void AddToFile(int loc,string year){
             dest.close();
             break;
         }
-        if(end > 0 ){
-            string smoney = data.substr(end + 1,data.size()-end);
-            smoney[data.size()-end]='\0';
-            double money = atoi(smoney.c_str());
-            if(money > 0){
-                
-                data = DelSpacebar(0,data.find_last_of("="),data);
-                data = DelSpacebar(data.find_last_of("=") + 1,data.size(),data);
-                data[data.find_first_of("=")] = ',';
-                dest << year <<"," << data << "\n" ,ios::app;
+        if(loc == 1 ||loc == 2){
+            if(end > 0 ){
+                string smoney = data.substr(end + 1,data.size()-end);
+                smoney[data.size()-end]='\0';
+                double money = atoi(smoney.c_str());
+                if(money > 0){
+                    
+                    data = DelSpacebar(0,data.find_last_of("="),data);
+                    data = DelSpacebar(data.find_last_of("=") + 1,data.size(),data);
+                    data[data.find_first_of("=")] = ',';
+                    dest << year <<"," << data << "\n" ,ios::app;
+                    cout << ">>COMPLETE\n";
+                } 
+                else cout << " >>MONEY MUST BE NUMBER\n";
+            }else cout << " >>CANNOT INPUT DATA\n";
+        }else{
+            if(atof(data.c_str()) > 0){
+                data = DelSpacebar(0,data.size(),data);
+                dest << year <<","<< data << "\n" ,ios::app;
                 cout << ">>COMPLETE\n";
             } 
             else cout << " >>MONEY MUST BE NUMBER\n";
-        }else cout << " >>CANNOT INPUT DATA\n";
+        }
     }
     
 }
