@@ -34,7 +34,7 @@ void ProfitAnalysis(int,int);//ยังไม่มีคนเขียน
 void StrToUpper(string &);//complete
 void AddToFile(int,string);//complete
 string DelSpacebar(int,int,string);//complete
-//long double AppraiseofCompany(totalprofit);
+void AppraiseofCompany();
 void BarGraphCompany();
 
 struct yeardata{
@@ -83,8 +83,10 @@ int main(){
         }else if(command == "SELLING"){
         	SearchData(2,textline.substr(7,textline.size()-7));
 		}else if(command == "PROFIT"){
-        	SearchData(3,textline.substr(6,textline.size()-6));
-		}else if(command == "CLOSE" || command == "EXIT" || command == "END") {
+        	SearchData(3,textline.substr(6,textline.size()-6));	
+		}else if(command == "COST"){
+        	SearchData(4,textline.substr(4,textline.size()-4));
+        }else if(command == "CLOSE" || command == "EXIT" || command == "END") {
             cout << "Thank you for use this Program.";
             break;
         }
@@ -258,6 +260,7 @@ void SearchData(int loc,string type){
             }
         }
         if(loc == 3) ProfitAnalysis(yearst,yearend);
+        if(loc == 4) AppraiseofCompany();
     }
     if(chk == 0){
     	ShowBarGraph();
@@ -339,7 +342,7 @@ void ProfitAnalysis(int yearmin,int yearmax){
 		profit.year.push_back(yearmin+i);
 		profit.company.push_back(m[i]);
 		cout<<"\t"<<yearmin+i<<"\t\t"<<m[i]<<endl;
-		//cout<<m[i]<<endl;
+		
 	}
 }
 
@@ -436,24 +439,21 @@ void ShowLineGraph(){
 		sprintf(yr,"%d",yearmax);
 		outtextxy(x1 -20,H-(0.07*H),yr);
 	}
-    
+    getch();
 }
 
-/*
-long double AppraiseofCompany(totalprofit asset){
-    long double value;
+void AppraiseofCompany(){
     double sum=0;
-    int Numberyears = sizeof(companydata::year);
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < profit.money.size(); i++)
     {
-        sum+=asset.profitforecast[i];
+        sum+=profit.money[i];
     } 
     double SumUnitMillion;
-    SumUnitMillion=sum/1000000; //ปรับเป็นหน่วย ล้านบาท
-    value = (pow(SumUnitMillion,Numberyears))*1000000; //ใช้สูตรก่อนแล้วค่อยกลับให้กลายเป็นหน่วยเดิม
-    return value;
+    SumUnitMillion=sum/1000000; 
+    sum = (pow(SumUnitMillion,profit.year.size()))*1000000;
+    cout << "Cost of your company is : " << sum<<"\n";
 }
-*/
+
 
 
 
