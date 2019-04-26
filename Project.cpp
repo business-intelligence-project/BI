@@ -25,7 +25,7 @@ int gettime(){
     return y;
 }
 
-void ShowBarGraph(double);//ฟิวเขียน
+void ShowBarGraph();//ฟิวเขียน
 void ShowLineGraph();//แบมเขียน
 void ShowprofitGraph(vector<int>);//ยังไม่มีคนเขียน
 void InputData(string textline);//เต๋าเขียน//complete
@@ -49,22 +49,8 @@ struct companydata{
     vector<double> money;
 };
 
-struct profitfromselling{
-    double profit;
-    vector<double> profitvec();
-};
-
-struct  totalprofit
-{ 
-    profitfromselling *receive1;
-    companydata *receive2;
-    vector<double> profit;
-    vector<double> profitforecast;
-    vector<double> totalprofitvec(profitfromselling *, companydata *);
-};
-
-vector<yeardata> ydata_investment;//เก็บข้อมูลจากการ Search คำว่า profit พศ ของ InvestmentSystemData.txt//
-vector<yeardata> ydata_partner;//เก็บข้อมูลจากการ Search คำว่า profit พศ ของ PartnerSystemDatatxt//
+vector<yeardata> ydata_investment;
+vector<yeardata> ydata_partner;
 vector<yeardata> ydata_selling;
 vector<yeardata> ydata_totalmoney;
 vector<yeardata> ydata;
@@ -453,9 +439,6 @@ void ShowLineGraph(){
     
 }
 
-void ShowprofitGraph(vector<int> profit){
-
-}
 /*
 long double AppraiseofCompany(totalprofit asset){
     long double value;
