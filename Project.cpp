@@ -96,6 +96,8 @@ int main(){
             SearchData(1,textline.substr(7,textline.size()-7));
         }else if(command == "SELLING"){
         	SearchData(2,textline.substr(7,textline.size()-7));
+		}else if(command == "PROFIT"){
+        	SearchData(3,textline.substr(6,textline.size()-6));
 		}else if(command == "CLOSE" || command == "EXIT" || command == "END") {
             cout << "Thank you for use this Program.";
             break;
@@ -272,7 +274,7 @@ void SearchData(int loc,string type){
         if(loc == 3) ProfitAnalysis(yearst,yearend);
     }
     if(chk == 0){
-    //	ShowBarGraph();
+    	ShowBarGraph();
 	}
     else if(chk == 1){
     	ShowLineGraph();
@@ -356,7 +358,50 @@ void ProfitAnalysis(int yearmin,int yearmax){
 }
 
 void ShowBarGraph(){
-	
+	double max = 0;
+	int count = 0;
+	cout<<"\tYear\t\t\tName\t\t\tMoney\n";
+	for(int i=0;i<ydata.size();i++){
+		yeardata ydatatmp = ydata[i];
+		for(int j=0;j<ydatatmp.money.size();j++){
+			cout<<"\t"<<ydatatmp.year<<"\t\t\t"<<ydatatmp.company[j]<<"\t\t\t"<<ydatatmp.money[j]<<endl;
+			if(ydatatmp.money[j]>max){
+				max = ydatatmp.money[j];
+			}count++;
+		}
+	}
+	if(count > 1){
+		double W = 800 ,H = 600;
+		initwindow(W,H);
+		line (0.1*W,H-(0.1*H),W*0.9,H-(0.1*H));
+		line (0.1*W,H-(0.1*H),0.1*W,(H*0.1));
+		setfillstyle(LINE_FILL,RED);
+		
+		int left = 0.12*W,top,right,bottom,c = 0;
+		char ty[100]={};
+		for(int i=0;i<ydata.size();i++){
+			setfillstyle(LINE_FILL,GREEN);
+			yeardata ydatatmp = ydata[i];
+			for(int j=0;j<ydatatmp.money.size();j++){
+				if(c != 0) left += 0.7*(W/count);
+				bottom = H-(0.1*H);
+				top = bottom - (ydatatmp.money[j]*H*0.8/max);
+				right = left + (0.6*W/count);
+				bar(left,top,right,bottom);
+				if(j == 0){
+					
+					sprintf(ty,"%d",ydatatmp.year);
+					outtextxy(left,H-(0.08*H),ty);
+				}
+				sprintf(ty,"%s",ydatatmp.company[j].c_str());
+				outtextxy(left,top-20,ty);
+				sprintf(ty,"%d",(int)(ydatatmp.money[j]));
+				outtextxy(0.02*W,top,ty);
+				c++;
+			}
+			if(ydatatmp.money.size()>0) left += 0.15*W/count;
+		}
+	}
 }
 
 void ShowLineGraph(){
@@ -412,27 +457,6 @@ void ShowprofitGraph(vector<int> profit){
 
 }
 /*
-vector<double> totalprofit::totalprofitvec(profitfromselling *input1,companydata *input2){
-    vector<double> data1,data2;
-    data1 = input1 -> profitvec;
-    data2 = input2 -> money;
-    int Numberyears = sizeof(companydata::year);
-    for (int i = 0; i < Numberyears; i++)
-    {
-        profit.push_back(data1[i]+data2[i]);
-    }
-    double sum=0;
-    for (int i = 0; i < 5; i++)
-    {
-        sum=0;
-        for (int j = 0+i; j < Numberyears+i; j++)
-        { 
-            sum +=profit[j];
-        }
-        profitforecast.push_back(sum/Numberyears);
-    }   
-}
-
 long double AppraiseofCompany(totalprofit asset){
     long double value;
     double sum=0;
