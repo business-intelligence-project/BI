@@ -9,10 +9,6 @@
 #include<vector>
 #include<time.h>
 #include<graphics.h>
-<<<<<<< HEAD
-=======
-
->>>>>>> 30772885b1b1751facf94922e15f55b623e6af47
 using namespace std;
  
 time_t rawtime;
@@ -34,7 +30,7 @@ void ShowLineGraph();//แบมเขียน
 void ShowprofitGraph(vector<int>);//ยังไม่มีคนเขียน
 void InputData(string textline);//เต๋าเขียน//complete
 void SearchData(int,string);//complete
-void ProfitAnalysis(int);//ยังไม่มีคนเขียน
+void ProfitAnalysis(int,int);//ยังไม่มีคนเขียน
 void StrToUpper(string &);//complete
 void AddToFile(int,string);//complete
 string DelSpacebar(int,int,string);//complete
@@ -73,6 +69,7 @@ vector<yeardata> ydata_selling;
 vector<yeardata> ydata_totalmoney;
 vector<yeardata> ydata;
 companydata comdata;
+companydata profit;
 int const cerrentyear = gettime(); 
 
 //main function//
@@ -150,6 +147,8 @@ void SearchData(int loc,string type){
     ydata.clear();
     comdata.year.clear();
     comdata.money.clear();
+    ydata_investment.clear();
+    ydata_partner.clear();
     type = DelSpacebar(0,type.size(),type);
     for(int i=0;i<type.size();i++){
         if((type[i] < '0' || type[i] > '9' )&&(type[i] != '-')&&(type[i] != ' ')){
@@ -186,9 +185,9 @@ void SearchData(int loc,string type){
     }
     ifstream source;
     if(loc == 0)source.open("InvestmentSystemData.txt");
-    else if(loc == 1 ||loc == 2) source.open("PartnerSystemData.txt");
+    else source.open("PartnerSystemData.txt");
     
-    if(loc != 2){
+    if(loc < 2){
         while(getline(source,textline)){
             if(chk == -1) break;
             int start = textline.find_first_of(",");
@@ -212,8 +211,7 @@ void SearchData(int loc,string type){
         }
     }
     else{
-        ydata_investment.clear();
-        ydata_partner.clear();
+        
         while(getline(source,textline)){
             if(chk == -1) break;
             int start = textline.find_first_of(",");
@@ -271,10 +269,10 @@ void SearchData(int loc,string type){
                 break;
             }
         }
-            
+        if(loc == 3) ProfitAnalysis(yearst,yearend);
     }
     if(chk == 0){
-    	ShowBarGraph();
+    //	ShowBarGraph();
 	}
     else if(chk == 1){
     	ShowLineGraph();
@@ -326,11 +324,35 @@ void AddToFile(int loc,string year){
     
 }
 
-void ProfitAnalysis(int year){
-    //คำนวนกำไรแต่ละปีเก็บไว้ใน vector แล้วเรียก function ShowprofitGraph
-    vector<int> profit;
-
-    
+void ProfitAnalysis(int yearmin,int yearmax){
+	double m[yearmax-yearmin+1]={};
+	for(int i=0;i<ydata_investment.size();i++){
+		yeardata ydatatmp = ydata_investment[i];
+		for(int j=0;j<ydatatmp.money.size();j++){
+			m[ydatatmp.year-yearmin ] += ydatatmp.money[j];
+		}
+	}
+	for(int i=0;i<ydata_partner.size();i++){
+		yeardata ydatatmp = ydata_partner[i];
+		for(int j=0;j<ydatatmp.money.size();j++){
+			m[ydatatmp.year-yearmin ] -=ydatatmp.money[j];
+		}
+	}
+	
+	for(int i=0;i<ydata_selling.size();i++){
+		yeardata ydatatmp = ydata_selling[i];
+		for(int j=0;j<ydatatmp.money.size();j++){
+			m[ydatatmp.year-yearmin ] +=ydatatmp.money[j];
+		}
+	}
+	profit.company = "";
+	cout<<"\tYeaar\t\tMoney\n";
+	for(int i=0;i<yearmax-yearmin+1;i++){
+		profit.year.push_back(yearmin+i);
+		profit.company.push_back(m[i]);
+		cout<<"\t"<<yearmin+i<<"\t\t"<<m[i]<<endl;
+		//cout<<m[i]<<endl;
+	}
 }
 
 void ShowBarGraph(){
